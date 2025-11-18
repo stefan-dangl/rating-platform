@@ -32,6 +32,10 @@
           submit()
     } 
   }
+
+    function removeComment(id: number) {
+        ratings = ratings.filter(c => c.id !== id);
+    }
 </script>
 
 
@@ -59,14 +63,14 @@
 </label>
 
 <br>
-<input class="inputBox" placeholder="Type some comment" bind:value={inputText} maxlength="100" onkeydown={handleInputKey}>
+<input class="inputBox" placeholder="Type some comment" bind:value={inputText} maxlength="80" onkeydown={handleInputKey}>
 
 <button disabled={!isInputLongEnough} onclick={submit}>
   Submit
 </button>
 
 {#each ratings.slice().reverse() as rating(rating.id)}
-  <Comment {...rating.props} />
+  <Comment {...rating.props} on:delete={() => removeComment(rating.id)}/>
 {/each}
 
 

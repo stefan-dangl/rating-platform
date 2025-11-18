@@ -1,4 +1,7 @@
 <script lang="ts">
+    import { createEventDispatcher } from 'svelte';
+
+    const dispatch = createEventDispatcher();
     const {text = "", rating = 5, isAdmin = false} = $props(); 
     let likes = $state(0)
 </script>
@@ -11,7 +14,7 @@
         <p class:positive={likes>0} class:negative={likes<0}>{likes}</p>
         {#if isAdmin}
         <div class="buttons">
-            <button>🟥</button>
+            <button onclick={() => dispatch("delete")}>🟥</button>
             <button onclick={() => {likes++}}>👍</button>
             <button onclick={() => {likes--}}>👎</button>            
         </div>
