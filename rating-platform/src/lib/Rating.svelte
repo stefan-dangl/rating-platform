@@ -1,11 +1,9 @@
 <script lang="ts">
-  import type { KeyboardEventHandler } from "svelte/elements";
   import Comment from "./Comment.svelte";
 
   type RatingItem = {
     id: number;
-    component: typeof Comment;
-    props: { text: string; isAdmin: boolean };
+    props: { text: string; rating: number; isAdmin: boolean };
   };
 
   const {isAdmin = false} = $props(); 
@@ -13,6 +11,7 @@
   let currentId: number = 0
   let ratings: RatingItem[] = $state([])
   let inputText: string = $state("")
+  let radioValue: string = $state("5")
   let isInputLongEnough: boolean = $derived(inputText.length >= 5)
 
   const submit = () => {
@@ -20,13 +19,11 @@
       return
     }
 
-    let x = {
+    ratings.push({
       id: currentId++,
-      component: Comment,
-      props: { text: inputText, isAdmin }
-    }
+      props: { text: inputText, rating: Number(radioValue), isAdmin }
+    })
 
-    ratings.push(x)
     inputText = ""
   }
 
@@ -38,8 +35,30 @@
 </script>
 
 
-<h1>Please rate Svelte</h1>
+<h1 style="color: orangered">Rate Svelte</h1>
 
+<label>
+  <input type="radio" name="rating" value="1" bind:group={radioValue} />
+  1
+</label>
+<label>
+  <input type="radio" name="rating" value="2" bind:group={radioValue} />
+  2
+</label>
+<label>
+  <input type="radio" name="rating" value="3" bind:group={radioValue} />
+  3
+</label>
+<label>
+  <input type="radio" name="rating" value="4" bind:group={radioValue} />
+  4
+</label>
+<label>
+  <input type="radio" name="rating" value="5" bind:group={radioValue} />
+  5
+</label>
+
+<br>
 <input class="inputBox" placeholder="Type some comment" bind:value={inputText} maxlength="100" onkeydown={handleInputKey}>
 
 <button disabled={!isInputLongEnough} onclick={submit}>
@@ -47,9 +66,7 @@
 </button>
 
 {#each ratings.slice().reverse() as rating(rating.id)}
-  <!-- <p>{rating.component}</p> -->
-  <svelte:component this={rating.component} {...rating.props} />
-  <!-- <Comment text={rating} isAdmin/> -->
+  <Comment {...rating.props} />
 {/each}
 
 
