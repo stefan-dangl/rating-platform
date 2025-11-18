@@ -2,9 +2,16 @@
   import type { KeyboardEventHandler } from "svelte/elements";
   import Comment from "./Comment.svelte";
 
+  type RatingItem = {
+    id: number;
+    component: typeof Comment;
+    props: { text: string; isAdmin: boolean };
+  };
+
   const {isAdmin = false} = $props(); 
 
-  let ratings: string[] = $state([])
+  let currentId: number = 0
+  let ratings: RatingItem[] = $state([])
   let inputText: string = $state("")
   let isInputLongEnough: boolean = $derived(inputText.length >= 5)
 
@@ -13,9 +20,13 @@
       return
     }
 
-    let x = Comment
+    let x = {
+      id: currentId++,
+      component: Comment,
+      props: { text: inputText, isAdmin }
+    }
 
-    ratings.push(inputText)
+    ratings.push(x)
     inputText = ""
   }
 
@@ -35,9 +46,10 @@
   Submit
 </button>
 
-{#each ratings.slice().reverse() as rating}
-  <!-- <p>{rating}</p> -->
-  <Comment text={rating} isAdmin/>
+{#each ratings.slice().reverse() as rating(rating.id)}
+  <!-- <p>{rating.component}</p> -->
+  <svelte:component this={rating.component} {...rating.props} />
+  <!-- <Comment text={rating} isAdmin/> -->
 {/each}
 
 
