@@ -1,20 +1,22 @@
 <script lang="ts">
-    const {text = "", isAdmin = false} = $props(); 
+    const {text = "", rating = 5, isAdmin = false} = $props(); 
     let likes = $state(0)
 </script>
 
 <div class="commentField">
     <p>{text}</p>
-
-    <p class:positive={likes>0} class:negative={likes<0}>{likes}</p>
-
-    {#if isAdmin}
+    
+    <div class="contol">
+        <p>{rating}</p>
+        <p class:positive={likes>0} class:negative={likes<0}>{likes}</p>
+        {#if isAdmin}
         <div class="buttons">
             <button>🟥</button>
             <button onclick={() => {likes++}}>👍</button>
             <button onclick={() => {likes--}}>👎</button>            
         </div>
-    {/if}
+        {/if}
+    </div>
 </div>
 
 <style>
@@ -25,9 +27,17 @@
         padding: 10px;
     }
 
+    .contol{
+        display: flex;
+        gap: 20px;
+        margin-left: auto;
+        margin-right: 10px;
+    }
+
     .buttons{
         display: flex;
         gap: 1px;
+        margin-left: auto;
     }
 
     .positive {
